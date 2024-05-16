@@ -81,8 +81,8 @@ class NlpDLCS {
 
                 val location = Location(originLocation.provider)
 
-                location.latitude = fakeLocation.x + (Math.random() * fakeLocation.offset - fakeLocation.offset / 2)
-                location.longitude = fakeLocation.y + (Math.random() * fakeLocation.offset - fakeLocation.offset / 2)
+                location.latitude = fakeLocation.x + (Math.random() * fakeLocation.x_bais - fakeLocation.x_bais / 2)
+                location.longitude = fakeLocation.y + (Math.random() * fakeLocation.y_bais - fakeLocation.y_bais / 2)
                 location.isMock = false
                 location.altitude = 0.0
                 location.speed = 0F

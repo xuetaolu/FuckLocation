@@ -73,9 +73,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             ConfigGateway.get().setCustomContext(applicationContext)
             val previousFakeLocation = ConfigGateway.get().readFakeLocation()
 
+            val previousYBiasInput = previousFakeLocation?.y_bais
+            val previousXBiasInput = previousFakeLocation?.x_bais
+
             val previousYInput = previousFakeLocation?.y
             val previousXInput = previousFakeLocation?.x
-            val previousOffsetInput = previousFakeLocation?.offset
+//            val previousOffsetInput = previousFakeLocation?.offset
             val previousECIInput = previousFakeLocation?.eci
             val previousPCIInput = previousFakeLocation?.pci
             val previousTACInput = previousFakeLocation?.tac
@@ -85,9 +88,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val numberFormat = NumberFormat.getNumberInstance()
             numberFormat.isGroupingUsed = false
             numberFormat.maximumFractionDigits = 20
+            findViewById<EditText>(R.id.custom_view_fl_x_bais).setText(numberFormat.format(previousXBiasInput))
+            findViewById<EditText>(R.id.custom_view_fl_y_bais).setText(numberFormat.format(previousYBiasInput))
             findViewById<EditText>(R.id.custom_view_fl_x).setText(numberFormat.format(previousXInput))
             findViewById<EditText>(R.id.custom_view_fl_y).setText(numberFormat.format(previousYInput))
-            findViewById<EditText>(R.id.custom_view_fl_offset).setText(numberFormat.format(previousOffsetInput))
+//            findViewById<EditText>(R.id.custom_view_fl_offset).setText(numberFormat.format(previousOffsetInput))
 
             findViewById<EditText>(R.id.custom_view_fl_eci).setText(previousECIInput.toString())
             findViewById<EditText>(R.id.custom_view_fl_pci).setText(previousPCIInput.toString())
@@ -96,12 +101,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             findViewById<EditText>(R.id.custom_view_fl_bandwidth).setText(previousBandwidthInput.toString())
 
             positiveButton(R.string.custom_location_dialog_save) { dialog ->
+                val yBiasInput: EditText = dialog.getCustomView()
+                    .findViewById(R.id.custom_view_fl_y_bais)
+                val xBiasInput: EditText = dialog.getCustomView()
+                    .findViewById(R.id.custom_view_fl_x_bais)
                 val yInput: EditText = dialog.getCustomView()
                     .findViewById(R.id.custom_view_fl_y)
                 val xInput: EditText = dialog.getCustomView()
                     .findViewById(R.id.custom_view_fl_x)
-                val offsetInput: EditText = dialog.getCustomView()
-                    .findViewById(R.id.custom_view_fl_offset)
+//                val offsetInput: EditText = dialog.getCustomView()
+//                    .findViewById(R.id.custom_view_fl_offset)
                 val eciInput: EditText = dialog.getCustomView()
                     .findViewById(R.id.custom_view_fl_eci)
                 val pciInput: EditText = dialog.getCustomView()
@@ -113,9 +122,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val bandwidthInput: EditText = dialog.getCustomView()
                     .findViewById(R.id.custom_view_fl_bandwidth)
 
+                xBiasInput.setText(xBiasInput.text.takeIf { xBiasInput.text.isNotEmpty() } ?: "0.0")
+                yBiasInput.setText(yBiasInput.text.takeIf { yBiasInput.text.isNotEmpty() } ?: "0.0")
                 xInput.setText(xInput.text.takeIf { xInput.text.isNotEmpty() } ?: "0.0")
                 yInput.setText(yInput.text.takeIf { yInput.text.isNotEmpty() } ?: "0.0")
-                offsetInput.setText(offsetInput.text.takeIf { offsetInput.text.isNotEmpty() } ?: "0.0")
+//                offsetInput.setText(offsetInput.text.takeIf { offsetInput.text.isNotEmpty() } ?: "0.0")
                 eciInput.setText(eciInput.text.takeIf { eciInput.text.isNotEmpty() } ?: "0")
                 pciInput.setText(pciInput.text.takeIf { pciInput.text.isNotEmpty() } ?: "0")
                 tacInput.setText(tacInput.text.takeIf { tacInput.text.isNotEmpty() } ?: "0")
@@ -125,12 +136,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 ConfigGateway.get().writeFakeLocation(
                     xInput.text.toString().toDouble(),
                     yInput.text.toString().toDouble(),
-                    offsetInput.text.toString().toDouble(),
+//                    offsetInput.text.toString().toDouble(),
                     eciInput.text.toString().toInt(),
                     pciInput.text.toString().toInt(),
                     tacInput.text.toString().toInt(),
                     earfcnInput.text.toString().toInt(),
-                    bandwidthInput.text.toString().toInt()
+                    bandwidthInput.text.toString().toInt(),
+                    xBiasInput.text.toString().toDouble(),
+                    yBiasInput.text.toString().toDouble(),
                 )
             }
             negativeButton(R.string.custom_location_dialog_notsave)
